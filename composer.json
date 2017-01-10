@@ -1,13 +1,18 @@
 {
-    "name": "incenteev/composer-parameter-handler",
+    "name": "kmarques/composer-parameter-handler",
     "description": "Composer script handling your ignored parameter file",
     "keywords": ["parameters management"],
-    "homepage": "https://github.com/Incenteev/ParameterHandler",
+    "homepage": "https://github.com/kmarques/ParameterHandler",
     "license": "MIT",
     "authors": [
         {
             "name": "Christophe Coevoet",
             "email": "stof@notk.org"
+        },
+        {
+            "name": "Karl Marques Bernardo"
+        ,
+            "email": "karlm2308@gmail.com"
         }
     ],
     "require": {
