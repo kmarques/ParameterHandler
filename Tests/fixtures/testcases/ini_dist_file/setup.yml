@@ -1,0 +1,11 @@
+title: Ini file with file already exist
+
+config:
+    dist-file: parameters.dist.ini
+    file: parameters.ini
+
+dist-file: parameters.dist.ini
+
+original-dist-file: dist.ini
+original-existing-file: existing.ini
+original-expected-file: expected.ini
