@@ -1,0 +1,7 @@
+parameters:
+    firstname: Dupond
+    age: 23
+    billing:
+        city: Paris
+        number: 23
+        address: 'Rue D''anton'

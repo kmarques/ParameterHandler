@@ -115,7 +115,8 @@ class ProcessorTest extends ProphecyTestCase
 
         $this->processor->processFile($testCase['config']);
 
-        $this->assertFileEquals($dataDir.'/expected.yml', $workingDir.'/'.$testCase['config']['file'], $testCase['title']);
+        $originalExpectedFile = isset($testCase['original-expected-file']) ? $testCase['original-expected-file'] : "expected.yml";
+        $this->assertFileEquals($dataDir.'/'.$originalExpectedFile, $workingDir.'/'.$testCase['config']['file'], $testCase['title']);
     }
 
     private function initializeTestCase(array $testCase, $dataDir, $workingDir)
@@ -126,10 +127,12 @@ class ProcessorTest extends ProphecyTestCase
             $fs->remove($workingDir);
         }
 
-        $fs->copy($dataDir.'/dist.yml', $workingDir.'/'. $testCase['dist-file']);
+        $originalDistFile = isset($testCase['original-dist-file']) ? $testCase['original-dist-file'] : "dist.yml";
+        $fs->copy($dataDir.'/'.$originalDistFile, $workingDir.'/'. $testCase['dist-file']);
 
-        if ($exists = file_exists($dataDir.'/existing.yml')) {
-            $fs->copy($dataDir.'/existing.yml', $workingDir.'/'.$testCase['config']['file']);
+        $existingFile = isset($testCase['original-existing-file']) ? $testCase['original-existing-file'] : "existing.yml";
+        if ($exists = file_exists($dataDir.'/'.$existingFile)) {
+            $fs->copy($dataDir.'/'.$existingFile, $workingDir.'/'.$testCase['config']['file']);
         }
 
         foreach ($testCase['environment'] as $var => $value) {
