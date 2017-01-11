@@ -30,21 +30,44 @@ class IniExecutor implements ExecutorInterface
             $string .= "[$section]" . PHP_EOL;
             foreach ($array as $key => $value) {
                 switch (true) {
-                    case is_numeric($value):
+                    case is_array($value):
+                        $isAssoc = $this->isAssoc($value);
+                        foreach ($value as $subKey => $subValue) {
+                            $string .= $key . "[" . ($isAssoc ? $subKey : '') . "] = " . $this->formatValues($subValue) . PHP_EOL;
+                        }
                         break;
-                    case is_bool($value):
-                        $value = $value ? 1 : 0;
-                        break;
-                    case is_string($value):
-                        $value = '"' . $value . '"';
+                    default:
+                        $string .= $key . " = " . $this->formatValues($value) . PHP_EOL;
                         break;
                 }
-                $string .= $key . " = " . $value . PHP_EOL;
             }
             $string .= PHP_EOL;
         }
 
         return trim($string, PHP_EOL);
+    }
+
+    private function formatValues($value)
+    {
+        switch (true) {
+            case is_numeric($value):
+                return $value;
+                break;
+            case is_bool($value):
+                return ($value ? 1 : 0);
+                break;
+            case is_string($value):
+                return '"' . $value . '"';
+                break;
+        }
+
+        return $value;
+    }
+
+    private function isAssoc(array $arr)
+    {
+        if (array() === $arr) return false;
+        return array_keys($arr) !== range(0, count($arr) - 1);
     }
 
     /**
