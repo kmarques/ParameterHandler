@@ -1,0 +1,12 @@
+title: Ini dist file with variable file with Yml parameters file
+
+config:
+    dist-file: parameters.dist.ini
+    file: parameters.yml
+    var-file: variables.yml
+
+dist-file: parameters.dist.ini
+
+original-dist-file: dist.ini
+original-existing-file: existing.yml
+original-expected-file: expected.yml

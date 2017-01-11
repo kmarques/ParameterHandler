@@ -7,6 +7,7 @@ use Incenteev\ParameterHandler\Executor\ExecutorInterface;
 use Symfony\Component\Finder\Finder;
 use Symfony\Component\Finder\SplFileInfo;
 use Symfony\Component\Yaml\Inline;
+use Symfony\Component\Yaml\Yaml;
 
 
 class Processor
@@ -27,7 +28,7 @@ class Processor
 
     public function processFile(array $config)
     {
-        $config       = $this->processConfig($config);
+        $config = $this->processConfig($config);
 
         $fileExecutor = $this->getExecutor($config['file']);
         $distExecutor = $this->getExecutor($config['dist-file']);
@@ -45,7 +46,7 @@ class Processor
         if (!isset($expectedValues[$parameterKey])) {
             throw new \InvalidArgumentException(sprintf('The top-level key %s is missing.', $parameterKey));
         }
-        $expectedParams = (array) $expectedValues[$parameterKey];
+        $expectedParams = (array)$expectedValues[$parameterKey];
 
         // find the actual params
         $actualValues = array_merge(
@@ -91,6 +92,24 @@ class Processor
             $config['parameter-key'] = 'parameters';
         }
 
+        if (empty($config['var-delimiter'])) {
+            if (empty($config['var-delimiter-open'])) {
+                $config['var-delimiter-open'] = '{%';
+            }
+
+            if (empty($config['var-delimiter-close'])) {
+                $config['var-delimiter-close'] = '%}';
+            }
+        } else {
+            if (empty($config['var-delimiter-open'])) {
+                $config['var-delimiter-open'] = $config['var-delimiter'];
+            }
+
+            if (empty($config['var-delimiter-close'])) {
+                $config['var-delimiter-close'] = $config['var-delimiter'];
+            }
+        }
+
         return $config;
     }
 
@@ -113,6 +132,10 @@ class Processor
 
         // Add the params coming from the environment values
         $actualParams = array_replace($actualParams, $this->getEnvValues($envMap));
+
+        if (isset($config['var-file'])) {
+            $expectedParams = $this->processVariableFile($config, $expectedParams);
+        }
 
         return $this->getParams($expectedParams, $actualParams);
     }
@@ -145,6 +168,22 @@ class Processor
         }
 
         return $actualParams;
+    }
+
+    private function processVariableFile(array $config, array $values)
+    {
+        if (!file_exists($config['var-file'])) {
+            throw new \InvalidArgumentException("Variable file '${config['var-file']}' doesn't exist.");
+        }
+
+        $variables = Yaml::parse(file_get_contents($config['var-file']));
+
+        $values = json_encode($values);
+        foreach ($variables as $varName => $varValue) {
+            $values = str_replace($config['var-delimiter-open'] . $varName . $config['var-delimiter-close'], $varValue, $values);
+        }
+
+        return json_decode($values, true);
     }
 
     private function getParams(array $expectedParams, array $actualParams)

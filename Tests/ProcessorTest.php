@@ -135,6 +135,10 @@ class ProcessorTest extends ProphecyTestCase
             $fs->copy($dataDir.'/'.$existingFile, $workingDir.'/'.$testCase['config']['file']);
         }
 
+        if (file_exists($dataDir.'/variables.yml')) {
+            $fs->copy($dataDir.'/variables.yml', $workingDir.'/'.$testCase['config']['var-file']);
+        }
+
         foreach ($testCase['environment'] as $var => $value) {
             $this->environmentBackup[$var] = getenv($var);
             putenv($var.'='.$value);

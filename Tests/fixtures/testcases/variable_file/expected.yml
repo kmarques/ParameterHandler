@@ -1,0 +1,9 @@
+# This file is auto-generated during the composer install
+parameters:
+    foo: foo
+    bar: value1
+    foobar:
+        - value1
+        - 3
+        - '{var1}'
+        - var1
