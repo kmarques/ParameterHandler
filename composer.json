@@ -28,8 +28,5 @@
         "psr-4": { "Incenteev\\ParameterHandler\\": "" }
     },
     "extra": {
-        "branch-alias": {
-            "dev-master": "2.1.x-dev"
-        }
     }
 }
