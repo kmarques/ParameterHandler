@@ -31,8 +31,9 @@ class IniExecutor implements ExecutorInterface
             foreach ($array as $key => $value) {
                 switch (true) {
                     case is_array($value):
+                        $isAssoc = $this->isAssoc($value);
                         foreach ($value as $subKey => $subValue) {
-                            $string .= $key . "[" . $subKey . "] = " . $this->formatValues($subValue) . PHP_EOL;
+                            $string .= $key . "[" . ($isAssoc ? $subKey : '') . "] = " . $this->formatValues($subValue) . PHP_EOL;
                         }
                         break;
                     default:
@@ -49,6 +50,9 @@ class IniExecutor implements ExecutorInterface
     private function formatValues($value)
     {
         switch (true) {
+            case is_numeric($value):
+                return $value;
+                break;
             case is_bool($value):
                 return ($value ? 1 : 0);
                 break;
@@ -58,6 +62,12 @@ class IniExecutor implements ExecutorInterface
         }
 
         return $value;
+    }
+
+    private function isAssoc(array $arr)
+    {
+        if (array() === $arr) return false;
+        return array_keys($arr) !== range(0, count($arr) - 1);
     }
 
     /**
