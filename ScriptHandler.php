@@ -29,7 +29,7 @@ class ScriptHandler
                 unset($configs['constant-file']);
             }
             if (isset($configs['files'])) {
-                if (!is_array($configs['files']) || array_keys($configs['files']) !== range(0, count($configs) - 1)) {
+                if (!is_array($configs['files']) || array_keys($configs['files']) !== range(0, count($configs['files']) - 1)) {
                     throw new \InvalidArgumentException('The files parameter must be a valid array of conf.');
                 }
                 $configs = $configs['files'];
